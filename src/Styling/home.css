@@ -1,0 +1,44 @@
+.homepage {
+    font-family: Arial, sans-serif;
+  }
+  
+  .navigation-bar {
+    background-color: #333;
+    padding: 1rem;
+  }
+  
+  .navigation-bar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .navigation-bar li {
+    display: inline;
+  }
+  
+  .navigation-bar a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .banner {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f4f4f4;
+  }
+  
+  .content {
+    padding: 2rem;
+  }
+  
+  .footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+  }
+  

@@ -1,0 +1,40 @@
+/* ../components/Navbar.css */
+.navigation-bar {
+    background: rgb(249,223,127);
+    background: linear-gradient(58deg, rgba(249,223,127,0.9920343137254902) 48%, rgba(128,0,255,0.9023984593837535) 100%);
+    padding: 1rem;
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in total width */
+    position: fixed; /* Optional: fix navbar to the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Optional: ensure it stays above other content */
+  }
+  .navigation-bar .logo {
+    color: rgba(128,0,255,0.9023984593837535); /* Set the text color to white or any other color you prefer */
+    font-size: 1.5rem; /* Adjust the font size as needed */
+    font-weight: bold; /* Optional: make the text bold */
+    margin-right: auto; /* Pushes the logo to the left */
+  }
+  .navigation-bar ul {
+    float: right;
+    text-align: center;
+    list-style-type: none;
+    margin-left: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .navigation-bar li {
+    display: inline;
+  }
+ 
+  
+  
+  .navigation-bar a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
