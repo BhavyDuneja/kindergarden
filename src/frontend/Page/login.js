@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../Styling/Login.css';  // Import the CSS file
-import Navbar from '../component/navbar';
+import Navbar from '../component/navbar.js';
 
 const Login = () => {
     const [email, setEmail] = useState('');

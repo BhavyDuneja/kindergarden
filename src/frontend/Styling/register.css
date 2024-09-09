@@ -1,0 +1,101 @@
+/* Background */
+body {
+    background-color: #fdf6e3; /* Pastel yellow background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  /* Container */
+  .container {
+    background-color: #ffffff; /* White background for the form */
+    padding: 2rem;
+    border-radius: 1rem; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 320px;
+    text-align: center;
+  }
+  
+  /* Heading */
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Form */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Input fields */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  select {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  /* Button */
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4caf50; /* Green background */
+    color: #ffffff; /* White text */
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  /* Error message */
+  .error-message {
+    color: #ff0000; /* Red text for error messages */
+    margin-top: 1rem;
+  }
+  
+  /* Links */
+  a {
+    color: #007bff; /* Blue links */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Additional styling */
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  .flex {
+    display: flex;
+    justify-content: space-between;
+  }
+  
