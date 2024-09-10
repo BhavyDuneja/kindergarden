@@ -23,38 +23,24 @@ db.connect((err) => {
   console.log('Connected to MySQL Database');
 });
 
-// Check for existing email in registration
 app.post('/register', (req, res) => {
   const { role, name, email, password, phoneNumber } = req.body;
 
-  const checkEmailQuery = 'SELECT * FROM admin WHERE Email = ?';
-  db.query(checkEmailQuery, [email], (err, results) => {
+  bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
-      return res.status(500).json({ error: 'Database error' });
+      return res.status(500).send(err);
     }
 
-    if (results.length > 0) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-
-    // Hash password and store in admin table
-    bcrypt.hash(password, saltRounds, (err, hash) => {
+    const query = 'INSERT INTO admin (Role, Name, Email, Password, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [role, name, email, hash, phoneNumber], (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }
-
-      const query = 'INSERT INTO admin (Role, Name, Email, Password, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
-      db.query(query, [role, name, email, hash, phoneNumber], (err, result) => {
-        if (err) {
-          return res.status(500).send(err);
-        }
-        res.status(200).send('Registration Successful');
-      });
+      res.status(200).send('Registration Successful');
     });
   });
 });
 
-// Login user and validate credentials from the user table
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -83,7 +69,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Admin endpoint to approve registration and move data to the user table
 app.post('/api/approve-registration', (req, res) => {
   const { email } = req.body;
 
@@ -117,7 +102,6 @@ app.post('/api/approve-registration', (req, res) => {
   });
 });
 
-// Admin endpoint to reject registration (remove from admin table)
 app.post('/api/reject-registration', (req, res) => {
   const { email } = req.body;
 
@@ -130,7 +114,6 @@ app.post('/api/reject-registration', (req, res) => {
   });
 });
 
-// Fetch admin data
 app.get('/api/admin-data', (req, res) => {
   const query = 'SELECT * FROM admin';
   db.query(query, (err, results) => {
@@ -142,7 +125,6 @@ app.get('/api/admin-data', (req, res) => {
   });
 });
 
-// Fetch user data
 app.get('/api/user-data', (req, res) => {
   const query = 'SELECT * FROM user';
   db.query(query, (err, results) => {
@@ -154,7 +136,6 @@ app.get('/api/user-data', (req, res) => {
   });
 });
 
-// Update user details with password hashing
 app.put('/api/update-user/:id', (req, res) => {
   const { id } = req.params;
   const { role, name, email, password, phoneNumber } = req.body;
@@ -174,7 +155,6 @@ app.put('/api/update-user/:id', (req, res) => {
   });
 });
 
-// Delete user
 app.delete('/api/delete-user/:id', (req, res) => {
   const { id } = req.params;
 
@@ -187,7 +167,6 @@ app.delete('/api/delete-user/:id', (req, res) => {
   });
 });
 
-// Start server
 app.listen(3001, () => {
   console.log('Server running on port 3001');
 });

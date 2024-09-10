@@ -13,7 +13,7 @@ const AdminPage = () => {
 
   const fetchAdminData = async () => {
     try {
-      const response = await axios.get('/api/admin-data');
+      const response = await axios.get('http://localhost:3001/api/admin-data');
       setAdminData(response.data);
     } catch (error) {
       console.error('Error fetching admin data:', error);
@@ -22,7 +22,7 @@ const AdminPage = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/api/user-data');
+      const response = await axios.get('http://localhost:3001/api/user-data');
       setUserData(response.data);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -31,7 +31,7 @@ const AdminPage = () => {
 
   const handleApprove = async (email) => {
     try {
-      await axios.post('/api/approve-registration', { email });
+      await axios.post('http://localhost:3001/api/approve-registration', { email });
       fetchAdminData();
       fetchUserData();
     } catch (error) {
@@ -41,7 +41,7 @@ const AdminPage = () => {
 
   const handleReject = async (email) => {
     try {
-      await axios.post('/api/reject-registration', { email });
+      await axios.post('http://localhost:3001/api/reject-registration', { email });
       fetchAdminData();
     } catch (error) {
       console.error('Error rejecting user:', error);
@@ -50,7 +50,7 @@ const AdminPage = () => {
 
   const handleUpdateUser = async (id, updatedData) => {
     try {
-      await axios.put(`/api/update-user/${id}`, updatedData);
+      await axios.put(`http://localhost:3001/api/update-user/${id}`, updatedData);
       fetchUserData();
     } catch (error) {
       console.error('Error updating user:', error);
@@ -58,19 +58,17 @@ const AdminPage = () => {
   };
 
   const handleDeleteUser = async (id) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      try {
-        await axios.delete(`/api/delete-user/${id}`);
-        fetchUserData();
-      } catch (error) {
-        console.error('Error deleting user:', error);
-      }
+    try {
+      await axios.delete(`http://localhost:3001/api/delete-user/${id}`);
+      fetchUserData();
+    } catch (error) {
+      console.error('Error deleting user:', error);
     }
   };
 
   return (
     <div>
-      <Navbard/>
+      <Navbard />
       <h2>Admin Table</h2>
       <table>
         <thead>
@@ -80,8 +78,8 @@ const AdminPage = () => {
             <th>Email</th>
             <th>Password</th>
             <th>PhoneNumber</th>
-            <th>Approve</th>
-            <th>Reject</th>
+            <th>Action 1</th>
+            <th>Action 2</th>
           </tr>
         </thead>
         <tbody>
@@ -102,7 +100,7 @@ const AdminPage = () => {
           ))}
         </tbody>
       </table>
-
+      
       <h2>User Table</h2>
       <table>
         <thead>
@@ -112,20 +110,21 @@ const AdminPage = () => {
             <th>Email</th>
             <th>Password</th>
             <th>PhoneNumber</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>Action 1</th>
+            <th>Action 2</th>
           </tr>
         </thead>
         <tbody>
           {userData.map((user) => (
-            <tr key={user.Email}>
+            <tr key={user.UserID}>
               <td>{user.Role}</td>
               <td>{user.Name}</td>
               <td>{user.Email}</td>
               <td>{user.Password}</td>
               <td>{user.PhoneNumber}</td>
               <td>
-                <button onClick={() => handleUpdateUser(user.UserID, { /* Pass updated user data here */ })}>Edit</button>
+                {/* Example update button; you may want to include a form for updating */}
+                <button onClick={() => handleUpdateUser(user.UserID, { /* updatedData */ })}>Update</button>
               </td>
               <td>
                 <button onClick={() => handleDeleteUser(user.UserID)}>Delete</button>
@@ -139,3 +138,4 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
+
