@@ -41,6 +41,7 @@ app.post('/register', (req, res) => {
   });
 });
 
+// Login user and validate credentials from the user table
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -69,6 +70,7 @@ app.post('/login', (req, res) => {
   });
 });
 
+// Admin endpoint to approve registration and move data to the user table
 app.post('/api/approve-registration', (req, res) => {
   const { email } = req.body;
 
@@ -81,19 +83,26 @@ app.post('/api/approve-registration', (req, res) => {
     if (results.length > 0) {
       const user = results[0];
 
-      const insertUserQuery = 'INSERT INTO user (Role, Name, Email, Password, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
-      db.query(insertUserQuery, [user.Role, user.Name, user.Email, user.Password, user.PhoneNumber], (err) => {
+      // Ensure the hashed password is moved to the user table
+      bcrypt.hash(user.Password, saltRounds, (err, hashedPassword) => {
         if (err) {
           return res.status(500).send(err);
         }
 
-        const deleteAdminQuery = 'DELETE FROM admin WHERE Email = ?';
-        db.query(deleteAdminQuery, [email], (err) => {
+        const insertUserQuery = 'INSERT INTO user (Role, Name, Email, Password, PhoneNumber) VALUES (?, ?, ?, ?, ?)';
+        db.query(insertUserQuery, [user.Role, user.Name, user.Email, hashedPassword, user.PhoneNumber], (err) => {
           if (err) {
             return res.status(500).send(err);
           }
 
-          res.status(200).send('User approved and moved to user table');
+          const deleteAdminQuery = 'DELETE FROM admin WHERE Email = ?';
+          db.query(deleteAdminQuery, [email], (err) => {
+            if (err) {
+              return res.status(500).send(err);
+            }
+
+            res.status(200).send('User approved and moved to user table');
+          });
         });
       });
     } else {
@@ -102,6 +111,7 @@ app.post('/api/approve-registration', (req, res) => {
   });
 });
 
+// Admin endpoint to reject registration (remove from admin table)
 app.post('/api/reject-registration', (req, res) => {
   const { email } = req.body;
 
@@ -114,6 +124,7 @@ app.post('/api/reject-registration', (req, res) => {
   });
 });
 
+// Fetch admin data
 app.get('/api/admin-data', (req, res) => {
   const query = 'SELECT * FROM admin';
   db.query(query, (err, results) => {
@@ -125,6 +136,7 @@ app.get('/api/admin-data', (req, res) => {
   });
 });
 
+// Fetch user data
 app.get('/api/user-data', (req, res) => {
   const query = 'SELECT * FROM user';
   db.query(query, (err, results) => {
@@ -136,25 +148,29 @@ app.get('/api/user-data', (req, res) => {
   });
 });
 
+// Update user details
 app.put('/api/update-user/:id', (req, res) => {
   const { id } = req.params;
   const { role, name, email, password, phoneNumber } = req.body;
 
-  bcrypt.hash(password, saltRounds, (err, hash) => {
+  // Only hash the password if it is provided
+  const updateUserQuery = password
+    ? 'UPDATE user SET Role = ?, Name = ?, Email = ?, Password = ?, PhoneNumber = ? WHERE UserID = ?'
+    : 'UPDATE user SET Role = ?, Name = ?, Email = ?, PhoneNumber = ? WHERE UserID = ?';
+
+  const queryParams = password
+    ? [role, name, email, bcrypt.hashSync(password, saltRounds), phoneNumber, id]
+    : [role, name, email, phoneNumber, id];
+
+  db.query(updateUserQuery, queryParams, (err) => {
     if (err) {
       return res.status(500).send(err);
     }
-
-    const updateUserQuery = 'UPDATE user SET Role = ?, Name = ?, Email = ?, Password = ?, PhoneNumber = ? WHERE UserID = ?';
-    db.query(updateUserQuery, [role, name, email, hash, phoneNumber, id], (err) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.status(200).send('User updated successfully');
-    });
+    res.status(200).send('User updated successfully');
   });
 });
 
+// Delete user
 app.delete('/api/delete-user/:id', (req, res) => {
   const { id } = req.params;
 
@@ -167,6 +183,7 @@ app.delete('/api/delete-user/:id', (req, res) => {
   });
 });
 
+// Start server
 app.listen(3001, () => {
   console.log('Server running on port 3001');
 });

@@ -5,6 +5,7 @@ import Navbard from '../component/navbard';
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([]);
   const [userData, setUserData] = useState([]);
+  const [updateData, setUpdateData] = useState({}); // Holds data for updating a user
 
   useEffect(() => {
     fetchAdminData();
@@ -48,9 +49,9 @@ const AdminPage = () => {
     }
   };
 
-  const handleUpdateUser = async (id, updatedData) => {
+  const handleUpdateUser = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/api/update-user/${id}`, updatedData);
+      await axios.put(`http://localhost:3001/api/update-user/${id}`, updateData);
       fetchUserData();
     } catch (error) {
       console.error('Error updating user:', error);
@@ -64,6 +65,11 @@ const AdminPage = () => {
     } catch (error) {
       console.error('Error deleting user:', error);
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdateData({ ...updateData, [name]: value });
   };
 
   return (
@@ -123,8 +129,9 @@ const AdminPage = () => {
               <td>{user.Password}</td>
               <td>{user.PhoneNumber}</td>
               <td>
-                {/* Example update button; you may want to include a form for updating */}
-                <button onClick={() => handleUpdateUser(user.UserID, { /* updatedData */ })}>Update</button>
+                <button onClick={() => setUpdateData({ ...user })}>
+                  Update
+                </button>
               </td>
               <td>
                 <button onClick={() => handleDeleteUser(user.UserID)}>Delete</button>
@@ -133,9 +140,72 @@ const AdminPage = () => {
           ))}
         </tbody>
       </table>
+
+      {updateData.UserID && (
+        <div>
+          <h2>Update User</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleUpdateUser(updateData.UserID);
+            }}
+          >
+            <label>
+              Role:
+              <input
+                type="text"
+                name="Role"
+                value={updateData.Role || ''}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Name:
+              <input
+                type="text"
+                name="Name"
+                value={updateData.Name || ''}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Email:
+              <input
+                type="email"
+                name="Email"
+                value={updateData.Email || ''}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Password:
+              <input
+                type="password"
+                name="Password"
+                value={updateData.Password || ''}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Phone Number:
+              <input
+                type="text"
+                name="PhoneNumber"
+                value={updateData.PhoneNumber || ''}
+                onChange={handleInputChange}
+              />
+            </label>
+            <br />
+            <button type="submit">Update User</button>
+          </form>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AdminPage;
-
