@@ -8,83 +8,97 @@ const RegisterScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (role && name && email && password) {
-      try {
-        const response = await axios.post('http://localhost:3001/register', {
-          role,
-          name,
-          email,
-          password,
-          phoneNumber,
-        });
+    if (!role || !name || !email || !password || !phoneNumber) {
+      setMessage('Please fill all required fields.');
+      return;
+    }
 
-        setMessage(response.data); 
-      } catch (error) {
-        setMessage('登録中にエラーが発生しました');
-      }
-    } else {
-      setMessage('すべての必須フィールドに入力してください。');
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match.');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:3001/register', {
+        role,
+        name,
+        email,
+        password,
+        phoneNumber,
+      });
+      setMessage(response.data);
+    } catch (error) {
+      setMessage('Error during registration.');
     }
   };
 
   return (
-    
     <div>
       <Navbar/>
-      <h2>登録</h2>
+      <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>役割:</label>
+          <label>Role:</label>
           <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="">役割を選択</option>
-            <option value="teacher">教師 </option>
-            <option value="parent"> 親    </option>
-            <option value="admin">  管理者 </option>
+            <option value="">Select a role</option>
+            <option value="teacher">Teacher</option>
+            <option value="parent">Parent</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
         <div>
-          <label>名前:</label>
+          <label>Name:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="お名前を入力してください"
+            placeholder="Enter your name"
           />
         </div>
         <div>
-          <label>メールアドレス:</label>
+          <label>Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="メールアドレスを入力してください"
+            placeholder="Enter your email"
           />
         </div>
         <div>
-          <label>パスワード:</label>
+          <label>Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="パスワードを入力してください"
+            placeholder="Enter your password"
           />
         </div>
         <div>
-          <label>電話番号:</label>
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm your password"
+          />
+        </div>
+        <div>
+          <label>Phone Number:</label>
           <input
             type="text"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="電話番号を入力してください"
+            placeholder="Enter your phone number"
           />
         </div>
-        <button type="submit">登録</button>
+        <button type="submit">Register</button>
       </form>
       {message && <p>{message}</p>}
     </div>

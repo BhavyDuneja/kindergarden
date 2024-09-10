@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './frontend/Page/login.js';   
 import HomePage from './frontend/Page/home.js'; 
 import RegisterScreen from './frontend/Page/register.js';
+import AdminScreen from './frontend/Page/admin.js';
 
 function App() {
     return (
@@ -13,7 +14,8 @@ function App() {
                     {/* Set Login component as the default route */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="register" element={<RegisterScreen/>}/> 
+                    <Route path="/register" element={<RegisterScreen/>}/> 
+                    <Route path='/admin-dashboard' element = {<AdminScreen/>}/>
                     {/* Add a route for HomePage */}
                     
                 </Routes>

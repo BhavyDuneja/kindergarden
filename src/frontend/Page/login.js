@@ -1,35 +1,66 @@
 import React, { useState } from 'react';
-import '../Styling/Login.css';  // Import the CSS file
+import axios from 'axios'; 
+import '../Styling/Login.css'; 
 import Navbar from '../component/navbar.js';
+import { useNavigate } from 'react-router-dom'; 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate(); 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (email === '' || password === '') {
-            setErrorMessage('メールアドレスとパスワードを入力してください。');
-        } else if (email === 'admin@example.com' && password === 'password123') {
-            setErrorMessage('ログイン成功！');
-        } else {
-            setErrorMessage('無効なメールアドレスまたはパスワードです。');
+        
+        // Check if fields are empty
+        if (!email || !password) {
+            setErrorMessage('Please enter both email and password.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:3001/login', { email, password });
+            const { data } = response;
+
+            if (data.success) {
+                switch (data.role) {
+                    case 'teacher':
+                        navigate('/teacher-dashboard');
+                        break;
+                    case 'parent':
+                        navigate('/parent-dashboard');
+                        break;
+                    case 'admin':
+                        navigate('/admin-dashboard');
+                        break;
+                    default:
+                        setErrorMessage('Invalid role');
+                }
+            } else {
+                setErrorMessage('Invalid email or password.');
+            }
+        } catch (error) {
+            setErrorMessage('Error during login. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="login-container">
             <div className="login-box">
-                <Navbar/>
-                <h2>ログイン</h2>
+                <Navbar />
+                <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="メールアドレスを入力してください"
+                            placeholder="Enter email"
                             required
                         />
                     </div>
@@ -38,11 +69,13 @@ const Login = () => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="パスワードを入力してください"
+                            placeholder="Enter password"
                             required
                         />
                     </div>
-                    <button type="submit">サインイン</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Signing In...' : 'Sign In'}
+                    </button>
                 </form>
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
