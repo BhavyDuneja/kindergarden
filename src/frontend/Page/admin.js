@@ -5,7 +5,14 @@ import Navbard from '../component/navbard';
 const AdminPage = () => {
   const [adminData, setAdminData] = useState([]);
   const [userData, setUserData] = useState([]);
-  const [updateData, setUpdateData] = useState({}); // Holds data for updating a user
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [updatedData, setUpdatedData] = useState({
+    Role: '',
+    Name: '',
+    Email: '',
+    Password: '',
+    PhoneNumber: ''
+  });
 
   useEffect(() => {
     fetchAdminData();
@@ -49,10 +56,11 @@ const AdminPage = () => {
     }
   };
 
-  const handleUpdateUser = async (id) => {
+  const handleUpdateUser = async (userId) => {
     try {
-      await axios.put(`http://localhost:3001/api/update-user/${id}`, updateData);
+      await axios.put(`http://localhost:3001/api/update-user/${userId}`, updatedData);
       fetchUserData();
+      setSelectedUser(null);
     } catch (error) {
       console.error('Error updating user:', error);
     }
@@ -67,9 +75,30 @@ const AdminPage = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setUpdateData({ ...updateData, [name]: value });
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (selectedUser) {
+      handleUpdateUser(selectedUser.UserID);
+    }
+  };
+
+  const handleEditClick = (user) => {
+    setSelectedUser(user);
+    setUpdatedData({
+      Role: user.Role,
+      Name: user.Name,
+      Email: user.Email,
+      Password: user.Password,
+      PhoneNumber: user.PhoneNumber
+    });
   };
 
   return (
@@ -106,7 +135,7 @@ const AdminPage = () => {
           ))}
         </tbody>
       </table>
-      
+
       <h2>User Table</h2>
       <table>
         <thead>
@@ -129,9 +158,7 @@ const AdminPage = () => {
               <td>{user.Password}</td>
               <td>{user.PhoneNumber}</td>
               <td>
-                <button onClick={() => setUpdateData({ ...user })}>
-                  Update
-                </button>
+                <button onClick={() => handleEditClick(user)}>Update</button>
               </td>
               <td>
                 <button onClick={() => handleDeleteUser(user.UserID)}>Delete</button>
@@ -141,66 +168,56 @@ const AdminPage = () => {
         </tbody>
       </table>
 
-      {updateData.UserID && (
+      {selectedUser && (
         <div>
           <h2>Update User</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleUpdateUser(updateData.UserID);
-            }}
-          >
+          <form onSubmit={handleFormSubmit}>
             <label>
               Role:
               <input
                 type="text"
                 name="Role"
-                value={updateData.Role || ''}
-                onChange={handleInputChange}
+                value={updatedData.Role}
+                onChange={handleFormChange}
               />
             </label>
-            <br />
             <label>
               Name:
               <input
                 type="text"
                 name="Name"
-                value={updateData.Name || ''}
-                onChange={handleInputChange}
+                value={updatedData.Name}
+                onChange={handleFormChange}
               />
             </label>
-            <br />
             <label>
               Email:
               <input
                 type="email"
                 name="Email"
-                value={updateData.Email || ''}
-                onChange={handleInputChange}
+                value={updatedData.Email}
+                onChange={handleFormChange}
               />
             </label>
-            <br />
             <label>
               Password:
               <input
                 type="password"
                 name="Password"
-                value={updateData.Password || ''}
-                onChange={handleInputChange}
+                value={updatedData.Password}
+                onChange={handleFormChange}
               />
             </label>
-            <br />
             <label>
-              Phone Number:
+              PhoneNumber:
               <input
                 type="text"
                 name="PhoneNumber"
-                value={updateData.PhoneNumber || ''}
-                onChange={handleInputChange}
+                value={updatedData.PhoneNumber}
+                onChange={handleFormChange}
               />
             </label>
-            <br />
-            <button type="submit">Update User</button>
+            <button type="submit">Update</button>
           </form>
         </div>
       )}

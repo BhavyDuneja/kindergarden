@@ -13,41 +13,47 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+      
         // Check if fields are empty
         if (!email || !password) {
-            setErrorMessage('Please enter both email and password.');
-            return;
+          setErrorMessage('Please enter both email and password.');
+          return;
         }
-
+      
         try {
-            setLoading(true);
-            const response = await axios.post('http://localhost:3001/login', { email, password });
-            const { data } = response;
+          setLoading(true);
+          const response = await axios.post('http://localhost:3001/login', { email, password });
+          const { data } = response;
+      
+          if (data.success) {
+            const { role, userId } = data; // Extract userId from the response
+            
+            // Save userId (parentID) in localStorage
+            localStorage.setItem('parentID', userId);
 
-            if (data.success) {
-                switch (data.role) {
-                    case 'teacher':
-                        navigate('/teacher-dashboard');
-                        break;
-                    case 'parent':
-                        navigate('/parent-dashboard');
-                        break;
-                    case 'admin':
-                        navigate('/admin-dashboard');
-                        break;
-                    default:
-                        setErrorMessage('Invalid role');
-                }
-            } else {
-                setErrorMessage('Invalid email or password.');
+            // Navigate to respective dashboard based on role
+            switch (role) {
+              case 'teacher':
+                navigate(`/teacher-dashboard/${userId}`); // Use userId in the URL
+                break;
+              case 'parent':
+                navigate(`/parent-dashboard/${userId}`); // Use userId in the URL
+                break;
+              case 'admin':
+                navigate(`/admin-dashboard`);
+                break;
+              default:
+                setErrorMessage('Invalid role');
             }
+          } else {
+            setErrorMessage('Invalid email or password.');
+          }
         } catch (error) {
-            setErrorMessage('Error during login. Please try again.');
+          setErrorMessage('Error during login. Please try again.');
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     return (
         <div className="login-container">
