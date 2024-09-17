@@ -31,18 +31,6 @@ const ParentDashboard = () => {
     fetchChildren();
   }, [parentID]);
 
-  const validateInputs = () => {
-    if (!childName || !childAge || !childClass) {
-      setErrorMessage('All fields are required');
-      return false;
-    }
-    if (isNaN(childAge) || childAge <= 0) {
-      setErrorMessage('Please enter a valid age');
-      return false;
-    }
-    return true;
-  };
-
   const handleAddChild = async () => {
     if (!validateInputs()) return;
 
@@ -78,6 +66,18 @@ const ParentDashboard = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const validateInputs = () => {
+    if (!childName || !childAge || !childClass) {
+      setErrorMessage('All fields are required');
+      return false;
+    }
+    if (isNaN(childAge) || childAge <= 0) {
+      setErrorMessage('Please enter a valid age');
+      return false;
+    }
+    return true;
   };
 
   return (

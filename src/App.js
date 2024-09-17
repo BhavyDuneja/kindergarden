@@ -5,21 +5,19 @@ import HomePage from './frontend/Page/home.js';
 import RegisterScreen from './frontend/Page/register.js';
 import AdminScreen from './frontend/Page/admin.js';
 import ParentDashboard from './frontend/Page/parent.js';
+import TeacherDashboard from './frontend/Page/teacher.js';
 
 function App() {
     return (
         <Router>
             <div>
-                {/* Define your routes here */}
                 <Routes>
-                    {/* Set Login component as the default route */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<RegisterScreen/>}/> 
-                    <Route path='/admin-dashboard' element = {<AdminScreen/>}/>
+                    <Route path="/register" element={<RegisterScreen />} />
+                    <Route path="/admin-dashboard" element={<AdminScreen />} />
                     <Route path="/parent-dashboard/:parentID" element={<ParentDashboard />} />
-                    {/* Add a route for HomePage */}
-                    
+                    <Route path="/teacher-dashboard/:teacherID" element={<TeacherDashboard />} />
                 </Routes>
             </div>
         </Router>

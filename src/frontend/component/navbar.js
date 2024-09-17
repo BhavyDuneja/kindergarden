@@ -5,9 +5,9 @@ import './navbar.css';
 const Navbar = () => {
   return (
     <nav className="navigation-bar">
-        <icon className="logo">
+        <ic className="logo">
         <a href="/">育児支援</a>
-        </icon>
+        </ic>
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/login">ログイン</a></li>
