@@ -59,16 +59,20 @@ app.post('/register', (req, res) => {
 // Login route
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
+  console.log('Login attempt for email:', email);
 
-  const query = 'SELECT UserID, Role, Password FROM user WHERE Email = ?';
+  const query = 'SELECT UserID, Role, Password FROM admin WHERE Email = ?';
   db.query(query, [email], (error, results) => {
     if (error) {
       console.error('Error querying database: ', error);
       return res.status(500).json({ success: false, message: 'Database error' });
     }
 
+    console.log('Query results:', results);
     if (results.length > 0) {
       const user = results[0];
+      console.log('User found:', user);
+
       bcrypt.compare(password, user.Password, (err, isMatch) => {
         if (err) {
           console.error('Error comparing passwords: ', err);
@@ -76,16 +80,20 @@ app.post('/login', (req, res) => {
         }
 
         if (isMatch) {
+          console.log('Login successful for user:', user.UserID);
           res.json({ success: true, role: user.Role, userId: user.UserID });
         } else {
+          console.log('Invalid credentials for email:', email);
           res.json({ success: false, message: 'Invalid credentials' });
         }
       });
     } else {
+      console.log('No user found with that email:', email);
       res.json({ success: false, message: 'Invalid credentials' });
     }
   });
 });
+
 
 // Fetch all admin data
 app.get('/api/admin-data', (req, res) => {

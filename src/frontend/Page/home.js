@@ -1,4 +1,3 @@
-// HomePage.js
 import React from 'react';
 import Navbar from '../component/navbar.js';
 import '../Styling/home.css';
